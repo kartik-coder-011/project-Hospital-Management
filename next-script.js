@@ -108,6 +108,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return 'General';
     }
+
+        // ========== CALCULATE ACTUAL DISTANCE (Haversine Formula) ==========
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth's radius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+    
+    function formatDistance(km) {
+        if (km < 1) {
+            return `${Math.round(km * 1000)} meters`;
+        }
+        return `${km.toFixed(1)} km`;
+    }
+    
+    // ========== GET USER LOCATION ==========
+    let userLat = null;
+    let userLng = null;
+    
+    function getUserLocation() {
+        return new Promise((resolve, reject) => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userLat = position.coords.latitude;
+                        userLng = position.coords.longitude;
+                        console.log("User location:", userLat, userLng);
+                        resolve({ lat: userLat, lng: userLng });
+                    },
+                    (error) => {
+                        console.log("Location error:", error);
+                        reject(error);
+                    }
+                );
+            } else {
+                reject(new Error("Geolocation not supported"));
+            }
+        });
+    }
     
     // ========== HELPER FUNCTIONS ==========
     function isSlotInPast(slotTime, selectedDate) {
@@ -341,7 +385,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         ${hospital.type} Specialist
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem; color: #94a3b8; margin-bottom: 0.5rem; font-size: 0.85rem;">
-                        <i class="fas fa-map-pin" style="color: #10b981;"></i> ${hospital.distance} from your location
+                        <i class="fas fa-map-pin" style="color: #10b981;"></i> 
+                         <strong>${hospital.distance}</strong> from your location
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.5rem; color: #10b981; margin: 0.5rem 0; padding: 0.3rem 0; border-top: 1px solid #334155; border-bottom: 1px solid #334155; font-size: 0.75rem;">
                         <i class="fas fa-clock"></i> ${hospital.timings.morning ? '🌅 Morning' : ''} ${hospital.timings.evening ? '🌙 Evening' : ''}
@@ -388,8 +433,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // ========== FILTER AND SHOW HOSPITALS ==========
-    function filterAndShowHospitals() {
+        // ========== FILTER AND SHOW HOSPITALS WITH ACTUAL DISTANCE ==========
+    async function filterAndShowHospitals() {
         const symptoms = userData.symptoms || '';
         console.log("Filtering for symptoms:", symptoms);
         
@@ -401,7 +446,30 @@ document.addEventListener('DOMContentLoaded', function() {
             type = 'General';
         }
         
-        filtered.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+        // TRY TO GET USER LOCATION FOR ACTUAL DISTANCE
+        try {
+            await getUserLocation();
+            
+            // Calculate actual distance for each hospital
+            filtered.forEach(hospital => {
+                const actualDistance = calculateDistance(userLat, userLng, hospital.lat, hospital.lng);
+                hospital.actualDistance = actualDistance;
+                hospital.distanceDisplay = formatDistance(actualDistance);
+                hospital.distance = hospital.distanceDisplay; // Update display distance
+            });
+            
+            // Sort by actual distance
+            filtered.sort((a, b) => a.actualDistance - b.actualDistance);
+            
+            console.log("✅ Using actual distance with user location");
+            showToast("📍 Showing actual distances from your location", "success");
+            
+        } catch(error) {
+            console.log("❌ Could not get location, using dummy distances");
+            // Fallback to dummy distances
+            filtered.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+            showToast("⚠️ Using approximate distances. Enable location for accuracy.", "warning");
+        }
         
         const badge = document.getElementById('filterTypeBadge');
         const info = document.getElementById('filterInfo');
