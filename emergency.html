@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Emergency Response | MediCareConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="emergency.css">
+</head>
+<body class="emergency-page">
+  <div class="emergency-container">
+    
+    <!-- Header with Back Button -->
+    <header class="emergency-header">
+      <a href="#" id="backButton" class="back-home-btn emergency-back">
+    <i class="fas fa-arrow-left"></i> Back
+</a>
+      <div class="emergency-logo">
+        <i class="fas fa-ambulance"></i>
+        <span>Emergency<span class="light">Response</span></span>
+      </div>
+      <div class="emergency-time" id="currentTime"></div>
+    </header>
+
+    <!-- SOS Big Button -->
+    <div class="sos-section">
+      <button id="sosButton" class="sos-button">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span>SOS</span>
+        <small>Emergency Alert</small>
+      </button>
+      <p class="sos-warning">⚠️ Use only in life-threatening situations</p>
+    </div>
+
+    <!-- Emergency Action Cards -->
+    <div class="emergency-actions-grid">
+      <div class="action-card" id="callAmbulanceCard">
+        <div class="action-icon red-bg">
+          <i class="fas fa-ambulance"></i>
+        </div>
+        <h3>Call Ambulance</h3>
+        <p>Immediate medical transport</p>
+        <button class="action-btn call-ambulance">Call Now</button>
+      </div>
+
+      <div class="action-card" id="shareLocationCard">
+        <div class="action-icon orange-bg">
+          <i class="fas fa-location-dot"></i>
+        </div>
+        <h3>Share Location</h3>
+        <p>Send live location to emergency services</p>
+        <button class="action-btn share-location">Share Now</button>
+      </div>
+      <div class="action-card" id="emergencyContactsCard">
+        <div class="action-icon purple-bg">
+          <i class="fas fa-phone-alt"></i>
+        </div>
+        <h3>Emergency Contacts</h3>
+        <p>Quick dial helpline numbers</p>
+        <button class="action-btn view-contacts">View Numbers</button>
+      </div>
+
+      <div class="action-card" id="firstAidCard">
+        <div class="action-icon blue-bg">
+          <i class="fas fa-book-medical"></i>
+        </div>
+        <h3>First Aid Guide</h3>
+        <p>Basic life-saving instructions</p>
+        <button class="action-btn view-guide">Read Guide</button>
+      </div>
+    </div>
+
+    <!-- Nearest Hospitals Section -->
+    <div class="nearest-hospitals">
+      <div class="section-header">
+        <i class="fas fa-hospital"></i>
+        <h3>Nearest Hospitals</h3>
+        <span class="refresh-btn" id="refreshHospitals"><i class="fas fa-sync-alt"></i> Refresh</span>
+      </div>
+      <div class="hospitals-list" id="nearestHospitalsList">
+        <div class="loading-hospitals"><i class="fas fa-spinner fa-pulse"></i> Loading nearby hospitals...</div>
+      </div>
+    </div>
+
+    <!-- Emergency Helplines -->
+    <div class="helplines-section">
+      <div class="section-header">
+        <i class="fas fa-phone-volume"></i>
+        <h3>24/7 Emergency Helplines</h3>
+      </div>
+      <div class="helplines-grid">
+        <div class="helpline-card" onclick="window.location.href='tel:102'">
+          <i class="fas fa-ambulance"></i>
+          <div>
+            <h4>Ambulance</h4>
+            <p class="helpline-number">102</p>
+          </div>
+        </div>
+        <div class="helpline-card" onclick="window.location.href='tel:100'">
+          <i class="fas fa-shield-alt"></i>
+          <div>
+            <h4>Police</h4>
+            <p class="helpline-number">100</p>
+          </div>
+        </div>
+        <div class="helpline-card" onclick="window.location.href='tel:1091'">
+          <i class="fas fa-female"></i>
+          <div>
+            <h4>Women Helpline</h4>
+            <p class="helpline-number">1091</p>
+          </div>
+        </div>
+        <div class="helpline-card" onclick="window.location.href='tel:1098'">
+          <i class="fas fa-child"></i>
+          <div>
+            <h4>Child Helpline</h4>
+            <p class="helpline-number">1098</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- First Aid Modal -->
+    <div id="firstAidModal" class="emergency-modal">
+      <div class="emergency-modal-content firstaid-modal">
+        <div class="emergency-modal-header">
+          <i class="fas fa-book-medical"></i>
+          <h3>First Aid Guide</h3>
+          <span class="close-firstaid-modal">&times;</span>
+        </div>
+        <div class="firstaid-content">
+          <div class="firstaid-category">
+            <h4><i class="fas fa-heartbeat"></i> Cardiac Arrest</h4>
+            <ul>
+              <li>Call emergency services immediately</li>
+              <li>Start CPR: 30 chest compressions followed by 2 rescue breaths</li>
+              <li>Use AED if available</li>
+              <li>Continue until help arrives</li>
+            </ul>
+          </div>
+          <div class="firstaid-category">
+            <h4><i class="fas fa-tint"></i> Severe Bleeding</h4>
+            <ul>
+              <li>Apply direct pressure with clean cloth</li>
+              <li>Elevate the injured area above heart if possible</li>
+              <li>Apply pressure bandage</li>
+              <li>Do not remove embedded objects</li>
+            </ul>
+          </div>
+          <div class="firstaid-category">
+            <h4><i class="fas fa-fire"></i> Burns</h4>
+            <ul>
+              <li>Cool burn with running cool water for 10-15 minutes</li>
+              <li>Cover with sterile gauze or clean cloth</li>
+              <li>Do not apply ice, butter, or ointments</li>
+              <li>Seek medical attention for severe burns</li>
+            </ul>
+          </div>
+          <div class="firstaid-category">
+            <h4><i class="fas fa-bone"></i> Fractures</h4>
+            <ul>
+              <li>Immobilize the injured area</li>
+              <li>Apply cold pack to reduce swelling</li>
+              <li>Do not try to realign bones</li>
+              <li>Seek immediate medical help</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Contacts Modal -->
+    <div id="contactsModal" class="emergency-modal">
+      <div class="emergency-modal-content contacts-modal">
+        <div class="emergency-modal-header">
+          <i class="fas fa-address-book"></i>
+          <h3>Emergency Contacts</h3>
+          <span class="close-contacts-modal">&times;</span>
+        </div>
+        <div class="contacts-content">
+          <div class="contact-group">
+            <h4>National Emergency Numbers</h4>
+            <div class="contact-list">
+              <div class="contact-item" onclick="window.location.href='tel:102'">
+                <i class="fas fa-ambulance"></i>
+                <div><strong>Ambulance</strong><br>102</div>
+                <button class="dial-btn">Call</button>
+              </div>
+              <div class="contact-item" onclick="window.location.href='tel:100'">
+                <i class="fas fa-shield-alt"></i>
+                <div><strong>Police</strong><br>100</div>
+                <button class="dial-btn">Call</button>
+              </div>
+              <div class="contact-item" onclick="window.location.href='tel:101'">
+                <i class="fas fa-fire-extinguisher"></i>
+                <div><strong>Fire</strong><br>101</div>
+                <button class="dial-btn">Call</button>
+              </div>
+            </div>
+          </div>
+          <div class="contact-group">
+            <h4>Personal Emergency Contacts</h4>
+            <div class="personal-contacts" id="personalContacts">
+              <p class="add-contact-hint"><i class="fas fa-plus-circle"></i> Add your emergency contacts</p>
+            </div>
+            <button id="addContactBtn" class="add-contact-btn">
+              <i class="fas fa-user-plus"></i> Add Emergency Contact
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location Tracking Modal -->
+    <div id="locationModal" class="emergency-modal">
+      <div class="emergency-modal-content location-modal">
+        <div class="emergency-modal-header">
+          <i class="fas fa-map-marker-alt"></i>
+          <h3>Live Location Sharing</h3>
+          <span class="close-location-modal">&times;</span>
+        </div>
+        <div class="location-content">
+          <div id="locationStatus" class="location-status">
+            <i class="fas fa-spinner fa-pulse"></i> Fetching your location...
+          </div>
+          <div id="locationMap" class="location-map"></div>
+          <div class="location-actions">
+            <button id="shareLocationNowBtn" class="share-location-btn">
+              <i class="fas fa-share-alt"></i> Share Location with Emergency Services
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Message -->
+    <div id="emergencyToast" class="toast-message"></div>
+
+  </div>
+
+  <script src="emergency.js"></script>
+</body>
+</html>

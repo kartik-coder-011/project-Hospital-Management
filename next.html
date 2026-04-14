@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Find Hospitals | MediCareConnect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <!-- Google Maps API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+  <style>
+    /* Emergency button style matching index.html */
+    .emergency-header-btn {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      border: none;
+      padding: 0.5rem 1.2rem;
+      border-radius: 2rem;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+      animation: pulseRed 2s infinite;
+    }
+    
+    @keyframes pulseRed {
+      0%, 100% { box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 2px 16px rgba(239, 68, 68, 0.8); }
+    }
+    
+    .emergency-header-btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #dc2626, #b91c1c);
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- Header with Emergency Button -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <a href="index.html" class="back-home-btn">
+          <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+      </div>
+      <div class="header-logo">
+        <i class="fas fa-hospital-user"></i>
+        <span>MediCare<span class="light">Connect</span></span>
+      </div>
+     
+      <div class="header-right">
+  <a href="emergency.html" class="emergency-header-btn" onclick="localStorage.setItem('previous_page', 'next.html');">
+    <i class="fas fa-ambulance"></i> 🚨 Emergency
+</a>
+  <div class="header-greeting">
+    <i class="fas fa-user-circle"></i>
+    <span id="userNameDisplay">Patient</span>
+  </div>
+</div>
+    </header>
+
+    <!-- User Info Summary -->
+    <div class="user-summary">
+      <div class="summary-icon"><i class="fas fa-notes-medical"></i></div>
+      <div class="summary-details">
+        <p><strong>Symptoms:</strong> <span id="displaySymptoms">-</span></p>
+        <p><strong>Location:</strong> <span id="displayLocation">-</span></p>
+        <p><strong>Age/Gender:</strong> <span id="displayAgeGender">-</span></p>
+      </div>
+      <div class="summary-badge" id="filterTypeBadge">Recommended: General</div>
+    </div>
+
+    <!-- Refine Button -->
+    <div class="refine-section">
+      <button id="refineByProblemBtn" class="refine-btn">
+        <i class="fas fa-stethoscope"></i> Recommend Hospitals Based on My Problem
+      </button>
+    </div>
+   <!-- Add this after the refine button section -->
+<div class="update-symptoms-section">
+    <button id="updateSymptomsBtn" class="update-symptoms-btn">
+    <i class="fas fa-edit"></i> Update My Symptoms
+</button>
+</div>
+
+    <!-- Hospitals Grid -->
+    <div class="hospitals-grid" id="hospitalsGrid">
+      <!-- Hospitals will appear here -->
+    </div>
+  </div>
+
+  <!-- Slot Modal -->
+  <div id="slotModal" class="modal">
+    <div class="modal-content modal-large">
+      <div class="modal-header">
+        <h3><i class="fas fa-calendar-check"></i> Book Appointment</h3>
+        <span class="close-modal">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="hospital-info-section">
+          <i class="fas fa-hospital"></i>
+          <div>
+            <p class="modal-hospital-name" id="modalHospitalName">Hospital Name</p>
+          </div>
+        </div>
+        <div class="date-selector">
+          <label><i class="fas fa-calendar-day"></i> Select Date:</label>
+          <input type="date" id="bookingDate" class="date-input">
+        </div>
+        <div class="slot-sections">
+          <div class="slot-section">
+            <div class="section-title"><i class="fas fa-sun"></i><span>Morning Slots</span></div>
+            <div class="slot-group" id="morningSlots"></div>
+          </div>
+          <div class="slot-section">
+            <div class="section-title"><i class="fas fa-moon"></i><span>Evening Slots</span></div>
+            <div class="slot-group" id="eveningSlots"></div>
+          </div>
+        </div>
+        <button id="confirmBookingBtn" class="confirm-btn">Confirm Booking</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bookingToast" class="toast-message"></div>
+
+  <script src="next-script.js"></script>
+</body>
+</html>
