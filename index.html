@@ -3,34 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>MedicareConnect/Patient-Registration/home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <title>MediCareConnect — Modern Healthcare, Instantly</title>
+  <meta name="description" content="Find the nearest hospital, book appointments, and get emergency help instantly with MediCareConnect.">
+  <!-- Preconnect to speed up external resources -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="enhancements.css">
 </head>
 <body>
+  <!-- Ambient Background (3 orbs, GPU-composited) -->
+  <div class="bg-particles" aria-hidden="true">
+    <div class="particle p1"></div>
+    <div class="particle p2"></div>
+    <div class="particle p3"></div>
+  </div>
+
   <div class="app-container">
-   <!--Header with Emergency Button beside 24/7 -->
-     <header class="app-header">
+    <!-- Header -->
+    <header class="app-header anim-fade-down">
       <div class="logo">
-        <i class="fas fa-heartbeat"></i>
+        <i class="fas fa-heartbeat logo-pulse"></i>
         <span>MediCare<span class="light">Connect</span></span>
       </div>
-      <!-- <div class="header-right">
-        <button id="emergencyHeaderBtn" class="emergency-header-btn">
-          <i class="fas fa-ambulance"></i> 🚨 Emergency
-        </button>
-        <div class="header-badge">24/7 Support</div>
-      </div> -->
+      <nav class="header-nav">
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#register" class="nav-link">Register</a>
+      </nav>
       <div class="header-right">
-  <a href="emergency.html" class="emergency-header-btn" onclick="localStorage.setItem('previous_page', 'index.html');">
-    <i class="fas fa-ambulance"></i> 🚨 Emergency
-</a>
-  <div class="header-badge">24/7 Support</div>
-</div>
+        <a href="emergency.html" class="emergency-header-btn" id="emergencyBtn" onclick="localStorage.setItem('previous_page', 'index.html');">
+          <i class="fas fa-ambulance"></i> 🚨 Emergency
+        </a>
+        <div class="header-badge">
+          <span class="badge-dot"></span>24/7 Support
+        </div>
+      </div>
     </header>
 
-    <!-- Check if user already registered -->
+    <!-- Welcome Banner (shown if user already registered) -->
     <div id="userLoggedInBanner" class="user-logged-banner" style="display: none;">
       <div class="banner-content">
         <i class="fas fa-check-circle"></i>
@@ -42,78 +55,145 @@
       </div>
     </div>
 
-    <main class="main-centered">
-      <!-- PATIENT REGISTRATION SECTION - Centered -->
-      <div class="card registration-card centered-card">
-        <div class="card-header">
-          <i class="fas fa-user-plus"></i>
-          <h2>Patient Registration</h2>
+    <!-- HERO + FORM split layout -->
+    <main class="hero-split" id="register">
+      <!-- Left: Hero Content -->
+      <div class="hero-left anim-fade-right">
+        <div class="hero-tag">
+          <i class="fas fa-shield-alt"></i> Trusted by 50,000+ patients
         </div>
-        <form id="registrationForm" class="registration-form">
-          <div class="input-group">
-            <label><i class="fas fa-user"></i> Full Name</label>
-            <input type="text" id="fullName" placeholder="e.g., John Carter" autocomplete="off">
-          </div>
-          <div class="input-row">
-            <div class="input-group half">
-              <label><i class="fas fa-calendar-alt"></i> Age</label>
-              <input type="number" id="age" placeholder="Age" min="0" max="120">
-            </div>
-            <div class="input-group half">
-              <label><i class="fas fa-venus-mars"></i> Gender</label>
-              <select id="gender">
-                <option value="">Select</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
+        <h1 class="hero-headline">
+          Modern Healthcare,<br>
+          <span class="gradient-text">Instantly Accessible</span>
+        </h1>
+        <p class="hero-subtitle">
+          Register once, find the perfect specialist, book your slot, and get emergency help — all in one seamless platform.
+        </p>
+
+        <!-- Feature Pills -->
+        <div class="feature-pills" id="features">
+          <div class="pill">
+            <span class="pill-icon"><i class="fas fa-hospital-user"></i></span>
+            <div>
+              <strong>Smart Hospital Finder</strong>
+              <p>AI-matched specialists based on your symptoms</p>
             </div>
           </div>
-          <div class="input-group">
-            <label><i class="fas fa-phone-alt"></i> Mobile Number</label>
-            <input type="tel" id="mobileNumber" placeholder="+91 98765 43210" autocomplete="off">
+          <div class="pill">
+            <span class="pill-icon"><i class="fas fa-calendar-check"></i></span>
+            <div>
+              <strong>Instant Slot Booking</strong>
+              <p>Morning & evening slots, confirmed in seconds</p>
+            </div>
           </div>
-          <div class="input-group">
-            <label><i class="fas fa-notes-medical"></i> Problem / Symptoms</label>
-            <textarea id="symptoms" rows="3" placeholder="Describe symptoms, pain location, duration..."></textarea>
+          <div class="pill">
+            <span class="pill-icon sos-icon"><i class="fas fa-ambulance"></i></span>
+            <div>
+              <strong>SOS Emergency</strong>
+              <p>Live ambulance tracking & first-aid guides</p>
+            </div>
           </div>
-          <div class="input-group">
-            <label><i class="fas fa-map-marker-alt"></i> Address / Location</label>
-            <input type="text" id="address" placeholder="City, area or full address" autocomplete="off">
+        </div>
+
+        <!-- Hero Stats -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-num">200+</span>
+            <span class="stat-label">Hospitals</span>
           </div>
-          <button type="button" id="findHospitalBtn" class="btn-find-hospital">
-            <i class="fas fa-hospital-user"></i> Find Hospital
-          </button>
-        </form>
-        <div class="form-note">
-          <i class="fas fa-shield-alt"></i> Your data is securely stored
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">15 min</span>
+            <span class="stat-label">Avg. Response</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num">50K+</span>
+            <span class="stat-label">Patients Helped</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Registration Form Card -->
+      <div class="hero-right anim-fade-left">
+        <div class="card registration-card glass-card">
+          <div class="card-header">
+            <div class="card-header-icon">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <div>
+              <h2>Patient Registration</h2>
+              <p class="card-subtitle">Fill in your details to get started</p>
+            </div>
+          </div>
+
+          <form id="registrationForm" class="registration-form">
+            <div class="input-group">
+              <label for="fullName"><i class="fas fa-user"></i> Full Name</label>
+              <div class="input-wrapper">
+                <input type="text" id="fullName" placeholder="e.g., John Carter" autocomplete="off">
+              </div>
+            </div>
+
+            <div class="input-row">
+              <div class="input-group half">
+                <label for="age"><i class="fas fa-calendar-alt"></i> Age</label>
+                <div class="input-wrapper">
+                  <input type="number" id="age" placeholder="Age" min="0" max="120">
+                </div>
+              </div>
+              <div class="input-group half">
+                <label for="gender"><i class="fas fa-venus-mars"></i> Gender</label>
+                <div class="input-wrapper">
+                  <select id="gender">
+                    <option value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="mobileNumber"><i class="fas fa-phone-alt"></i> Mobile Number</label>
+              <div class="input-wrapper">
+                <input type="tel" id="mobileNumber" placeholder="+91 98765 43210" autocomplete="off">
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="symptoms"><i class="fas fa-notes-medical"></i> Problem / Symptoms</label>
+              <div class="input-wrapper">
+                <textarea id="symptoms" rows="3" placeholder="Describe symptoms, pain location, duration..."></textarea>
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label for="address"><i class="fas fa-map-marker-alt"></i> Address / Location</label>
+              <div class="input-wrapper">
+                <input type="text" id="address" placeholder="City, area or full address" autocomplete="off">
+              </div>
+            </div>
+
+            <button type="button" id="findHospitalBtn" class="btn-find-hospital">
+              <i class="fas fa-hospital-user"></i>
+              <span>Find My Hospital</span>
+              <i class="fas fa-arrow-right btn-arrow"></i>
+            </button>
+          </form>
+
+          <div class="form-note">
+            <i class="fas fa-shield-alt"></i> Your data is encrypted and securely stored locally
+          </div>
         </div>
       </div>
     </main>
 
     <footer class="app-footer">
-      <p>© 2025 MediCareConnect — instant support, modern care</p>
+      <p>© 2025 MediCareConnect — instant support, modern care &nbsp;|&nbsp; Built with ❤️ for patients everywhere</p>
     </footer>
   </div>
-
-  <!-- Emergency Alert Modal -->
-  <!-- <div id="emergencyModal" class="emergency-modal">
-    <div class="emergency-modal-content">
-      <div class="emergency-modal-header">
-        <i class="fas fa-triangle-exclamation"></i>
-        <h2>EMERGENCY ALERT</h2>
-        <span class="close-emergency">&times;</span>
-      </div>
-      <div class="emergency-modal-body">
-        <p>⚠️ This will immediately alert emergency services.</p>
-        <div class="emergency-actions-modal">
-          <button id="emergencyCallAmbulance" class="emergency-modal-btn"><i class="fas fa-ambulance"></i> Call Ambulance</button>
-          <button id="emergencyShareLocation" class="emergency-modal-btn"><i class="fas fa-location-dot"></i> Share Live Location</button>
-        </div>
-        <p class="warning-text-modal">Use only in serious situations</p>
-      </div>
-    </div>
-  </div> -->
 
   <script src="script.js"></script>
 </body>

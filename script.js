@@ -1,244 +1,225 @@
-// script.js - Modern Healthcare Web App with User Persistence
+// script.js — Enhanced MediCareConnect with Toast Notifications
+
+// ========== TOAST NOTIFICATION SYSTEM ==========
+function injectToast() {
+    if (document.getElementById('enhancedToast')) return;
+    const toast = document.createElement('div');
+    toast.id = 'enhancedToast';
+    toast.innerHTML = '<span class="toast-icon"></span><span class="toast-msg"></span>';
+    document.body.appendChild(toast);
+}
+
+let toastTimer = null;
+function showToast(message, type = 'success', duration = 3500) {
+    injectToast();
+    const toast = document.getElementById('enhancedToast');
+    const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+    toast.querySelector('.toast-icon').textContent = icons[type] || '💬';
+    toast.querySelector('.toast-msg').textContent = message;
+    toast.className = `show toast-${type}`;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.className = ''; }, duration);
+}
+
+// ========== INPUT ERROR HIGHLIGHT ==========
+function markError(el) {
+    if (!el) return;
+    el.classList.add('input-error');
+    el.focus();
+    const remove = () => { el.classList.remove('input-error'); el.removeEventListener('input', remove); };
+    el.addEventListener('input', remove);
+}
 
 document.addEventListener('DOMContentLoaded', function() {
-    
+
     // ========== CHECK IF USER ALREADY REGISTERED ==========
     let existingUserData = null;
     try {
         const storedData = localStorage.getItem('healthcare_patient_registration');
-        if (storedData) {
-            existingUserData = JSON.parse(storedData);
-        }
-    } catch(e) {
-        console.error('Error reading localStorage', e);
-    }
-    
+        if (storedData) existingUserData = JSON.parse(storedData);
+    } catch(e) { console.error('Error reading localStorage', e); }
+
     // DOM Elements
-    const fullNameInput = document.getElementById('fullName');
-    const ageInput = document.getElementById('age');
-    const genderSelect = document.getElementById('gender');
+    const fullNameInput     = document.getElementById('fullName');
+    const ageInput          = document.getElementById('age');
+    const genderSelect      = document.getElementById('gender');
     const mobileNumberInput = document.getElementById('mobileNumber');
-    const symptomsTextarea = document.getElementById('symptoms');
-    const addressInput = document.getElementById('address');
-    const findHospitalBtn = document.getElementById('findHospitalBtn');
-    const userLoggedInBanner = document.getElementById('userLoggedInBanner');
-    const loggedUserNameSpan = document.getElementById('loggedUserName');
-    const clearUserBtn = document.getElementById('clearUserBtn');
-    
+    const symptomsTextarea  = document.getElementById('symptoms');
+    const addressInput      = document.getElementById('address');
+    const findHospitalBtn   = document.getElementById('findHospitalBtn');
+    const userLoggedInBanner= document.getElementById('userLoggedInBanner');
+    const loggedUserNameSpan= document.getElementById('loggedUserName');
+    const clearUserBtn      = document.getElementById('clearUserBtn');
+
     // ========== PRE-FILL FORM IF USER EXISTS ==========
     if (existingUserData) {
-        // Show welcome banner
-        userLoggedInBanner.style.display = 'block';
-        loggedUserNameSpan.textContent = existingUserData.fullName || 'Patient';
-        
-        // Pre-fill all fields
-        if (fullNameInput) fullNameInput.value = existingUserData.fullName || '';
-        if (ageInput) ageInput.value = existingUserData.age || '';
-        if (genderSelect) genderSelect.value = existingUserData.gender || '';
+        if (userLoggedInBanner) userLoggedInBanner.style.display = 'block';
+        if (loggedUserNameSpan) loggedUserNameSpan.textContent = existingUserData.fullName || 'Patient';
+        if (fullNameInput)     fullNameInput.value     = existingUserData.fullName     || '';
+        if (ageInput)          ageInput.value          = existingUserData.age          || '';
+        if (genderSelect)      genderSelect.value      = existingUserData.gender       || '';
         if (mobileNumberInput) mobileNumberInput.value = existingUserData.mobileNumber || '';
-        if (symptomsTextarea) symptomsTextarea.value = existingUserData.symptoms || '';
-        if (addressInput) addressInput.value = existingUserData.address || '';
-        
-        // Disable fields? No, let user update if needed
-        // But add a subtle hint
+        if (symptomsTextarea)  symptomsTextarea.value  = existingUserData.symptoms     || '';
+        if (addressInput)      addressInput.value      = existingUserData.address      || '';
+
         const formNote = document.querySelector('.form-note');
         if (formNote) {
-            formNote.innerHTML = '<i class="fas fa-info-circle"></i> Your details are loaded. Update and click "Find Hospital" to save changes.';
+            formNote.innerHTML = '<i class="fas fa-info-circle"></i> Your details are loaded. Update and click "Find My Hospital" to save changes.';
         }
     }
-    
-    // ========== CLEAR USER DATA (New User) ==========
+
+    // ========== CLEAR USER DATA ==========
     if (clearUserBtn) {
         clearUserBtn.addEventListener('click', function() {
-            if (confirm('Are you sure? This will clear your registration data. You can register again.')) {
-                localStorage.removeItem('healthcare_patient_registration');
-                localStorage.removeItem('active_booking');
-                // Clear form
-                if (fullNameInput) fullNameInput.value = '';
-                if (ageInput) ageInput.value = '';
-                if (genderSelect) genderSelect.value = '';
-                if (mobileNumberInput) mobileNumberInput.value = '';
-                if (symptomsTextarea) symptomsTextarea.value = '';
-                if (addressInput) addressInput.value = '';
-                // Hide banner
-                userLoggedInBanner.style.display = 'none';
-                // Reset form note
-                const formNote = document.querySelector('.form-note');
-                if (formNote) {
-                    formNote.innerHTML = '<i class="fas fa-shield-alt"></i> Your data is securely stored';
-                }
-                alert('Registration data cleared. You can now register as a new patient.');
-            }
+            localStorage.removeItem('healthcare_patient_registration');
+            localStorage.removeItem('active_booking');
+            if (fullNameInput)     fullNameInput.value     = '';
+            if (ageInput)          ageInput.value          = '';
+            if (genderSelect)      genderSelect.value      = '';
+            if (mobileNumberInput) mobileNumberInput.value = '';
+            if (symptomsTextarea)  symptomsTextarea.value  = '';
+            if (addressInput)      addressInput.value      = '';
+            if (userLoggedInBanner) userLoggedInBanner.style.display = 'none';
+            const formNote = document.querySelector('.form-note');
+            if (formNote) formNote.innerHTML = '<i class="fas fa-shield-alt"></i> Your data is encrypted and securely stored locally';
+            showToast('Registration cleared. You can register as a new patient.', 'info');
         });
     }
-    
-    // ========== VALIDATION FUNCTION ==========
+
+    // ========== VALIDATION ==========
     function validateRegistrationForm() {
-        const fullName = fullNameInput?.value.trim() || '';
-        const age = ageInput?.value.trim() || '';
-        const gender = genderSelect?.value || '';
+        const fullName     = fullNameInput?.value.trim()     || '';
+        const age          = ageInput?.value.trim()          || '';
+        const gender       = genderSelect?.value             || '';
         const mobileNumber = mobileNumberInput?.value.trim() || '';
-        const symptoms = symptomsTextarea?.value.trim() || '';
-        const address = addressInput?.value.trim() || '';
-        
-        if (fullName === '') {
-            alert('❌ Please enter your full name.');
-            fullNameInput?.focus();
+        const symptoms     = symptomsTextarea?.value.trim()  || '';
+        const address      = addressInput?.value.trim()      || '';
+
+        if (!fullName) {
+            showToast('Please enter your full name.', 'error');
+            markError(fullNameInput);
             return false;
         }
-        
-        if (age === '') {
-            alert('❌ Please enter your age.');
-            ageInput?.focus();
+        if (!age) {
+            showToast('Please enter your age.', 'error');
+            markError(ageInput);
             return false;
         }
-        
         const ageNum = parseInt(age);
         if (isNaN(ageNum) || ageNum < 0 || ageNum > 120) {
-            alert('❌ Please enter a valid age (0-120).');
-            ageInput?.focus();
+            showToast('Please enter a valid age (0–120).', 'error');
+            markError(ageInput);
             return false;
         }
-        
-        if (gender === '') {
-            alert('❌ Please select your gender.');
-            genderSelect?.focus();
+        if (!gender) {
+            showToast('Please select your gender.', 'error');
+            markError(genderSelect);
             return false;
         }
-        
-        if (mobileNumber === '') {
-            alert('❌ Please enter your mobile number.');
-            mobileNumberInput?.focus();
+        if (!mobileNumber) {
+            showToast('Please enter your mobile number.', 'error');
+            markError(mobileNumberInput);
             return false;
         }
-        
         const mobileRegex = /^[0-9+\-\s()]{10,15}$/;
         if (!mobileRegex.test(mobileNumber)) {
-            alert('⚠️ Please enter a valid mobile number (minimum 10 digits).');
-            mobileNumberInput?.focus();
+            showToast('Please enter a valid mobile number (min 10 digits).', 'warning');
+            markError(mobileNumberInput);
             return false;
         }
-        
-        if (symptoms === '') {
-            alert('❌ Please describe your problem / symptoms.');
-            symptomsTextarea?.focus();
+        if (!symptoms) {
+            showToast('Please describe your problem / symptoms.', 'error');
+            markError(symptomsTextarea);
             return false;
         }
-        
-        if (address === '') {
-            alert('❌ Please enter your address or location.');
-            addressInput?.focus();
+        if (!address) {
+            showToast('Please enter your address or location.', 'error');
+            markError(addressInput);
             return false;
         }
-        
         return true;
     }
-    
+
     // ========== STORE PATIENT DATA ==========
     function storePatientDataAndRedirect() {
+        const btn = findHospitalBtn;
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Finding hospitals...</span>';
+        }
+
         const patientData = {
-            fullName: fullNameInput?.value.trim() || '',
-            age: ageInput?.value.trim() || '',
-            gender: genderSelect?.value || '',
+            fullName:     fullNameInput?.value.trim()     || '',
+            age:          ageInput?.value.trim()          || '',
+            gender:       genderSelect?.value             || '',
             mobileNumber: mobileNumberInput?.value.trim() || '',
-            symptoms: symptomsTextarea?.value.trim() || '',
-            address: addressInput?.value.trim() || '',
+            symptoms:     symptomsTextarea?.value.trim()  || '',
+            address:      addressInput?.value.trim()      || '',
             registrationTimestamp: new Date().toISOString(),
             patientId: 'PAT-' + Date.now() + '-' + Math.floor(Math.random() * 1000)
         };
-        
+
         localStorage.setItem('healthcare_patient_registration', JSON.stringify(patientData));
         localStorage.setItem('last_registration_time', new Date().toString());
-        
-        alert(`✅ Registration successful! Redirecting to find nearby hospitals.\n\nWelcome, ${patientData.fullName}!`);
-        window.location.href = 'next.html';
+
+        showToast(`Welcome, ${patientData.fullName}! Finding nearby hospitals...`, 'success', 2000);
+
+        setTimeout(() => { window.location.href = 'next.html'; }, 1200);
     }
-    
+
     // ========== FIND HOSPITAL BUTTON ==========
     if (findHospitalBtn) {
         findHospitalBtn.addEventListener('click', function(e) {
             e.preventDefault();
-            if (validateRegistrationForm()) {
-                storePatientDataAndRedirect();
-            }
+            if (validateRegistrationForm()) storePatientDataAndRedirect();
         });
     }
-    
-    // ========== EMERGENCY FUNCTIONALITY ==========
-    // const emergencyHeaderBtn = document.getElementById('emergencyHeaderBtn');
-    // const emergencyModal = document.getElementById('emergencyModal');
-    // const closeEmergency = document.querySelector('.close-emergency');
-    // const emergencyCallAmbulance = document.getElementById('emergencyCallAmbulance');
-    // const emergencyShareLocation = document.getElementById('emergencyShareLocation');
-    
-    // function openEmergencyModal() {
-    //     emergencyModal.style.display = 'flex';
-    // }
-    
-    // function closeEmergencyModal() {
-    //     emergencyModal.style.display = 'none';
-    // }
-    
-    // if (emergencyHeaderBtn) {
-    //     emergencyHeaderBtn.addEventListener('click', openEmergencyModal);
-    // }
-    
-    // if (closeEmergency) {
-    //     closeEmergency.addEventListener('click', closeEmergencyModal);
-    // }
-    
-    // window.addEventListener('click', (e) => {
-    //     if (e.target === emergencyModal) closeEmergencyModal();
-    // });
-    
-    // if (emergencyCallAmbulance) {
-    //     emergencyCallAmbulance.addEventListener('click', () => {
-    //         alert('📞 Calling ambulance... 🚑\n\nEmergency services have been notified. Please stay on the line.');
-    //         closeEmergencyModal();
-    //     });
-    // }
-    
-    // if (emergencyShareLocation) {
-    //     emergencyShareLocation.addEventListener('click', () => {
-    //         if ('geolocation' in navigator) {
-    //             navigator.geolocation.getCurrentPosition(
-    //                 function(position) {
-    //                     alert(`📍 Location shared successfully!\n\nLatitude: ${position.coords.latitude}\nLongitude: ${position.coords.longitude}\n\nEmergency responders can now track your location.`);
-    //                 },
-    //                 function(error) {
-    //                     alert('📍 Location shared successfully (approximate).\n\nEmergency responders have been notified.');
-    //                 }
-    //             );
-    //         } else {
-    //             alert('📍 Location shared successfully.\n\nEmergency responders have been notified.');
-    //         }
-    //         closeEmergencyModal();
-    //     });
-    // }
-    
+
     // ========== ENTER KEY SUPPORT ==========
     const formInputs = [fullNameInput, ageInput, genderSelect, mobileNumberInput, symptomsTextarea, addressInput];
     formInputs.forEach(input => {
-        if (input) {
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
-                    e.preventDefault();
-                    if (e.target === addressInput) {
-                        findHospitalBtn?.click();
-                    }
-                }
-            });
-        }
+        if (!input) return;
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                if (e.target === addressInput) findHospitalBtn?.click();
+            }
+        });
     });
-    
-    // Auto capitalize name
+
+    // ========== AUTO CAPITALIZE NAME ==========
     if (fullNameInput) {
         fullNameInput.addEventListener('blur', function() {
             let words = this.value.trim().split(' ');
-            words = words.map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+            words = words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
             this.value = words.join(' ');
         });
     }
-    
-    console.log('Healthcare Web App initialized | User persistence enabled');
+
+    // ========== STAGGER ANIMATE PILLS ON LOAD ==========
+    const pills = document.querySelectorAll('.pill');
+    pills.forEach((pill, i) => {
+        pill.style.opacity = '0';
+        pill.style.transform = 'translateX(-20px)';
+        pill.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        setTimeout(() => {
+            pill.style.opacity = '1';
+            pill.style.transform = 'translateX(0)';
+        }, 300 + i * 120);
+    });
+
+    // ========== STATS COUNT-UP ANIMATION ==========
+    const statNums = document.querySelectorAll('.stat-num');
+    const observerOpts = { threshold: 0.5 };
+    const statsObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fadeUp 0.4s ease both';
+                statsObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOpts);
+    statNums.forEach(el => statsObserver.observe(el));
+
+    console.log('MediCareConnect Enhanced UI v2.0 initialized');
 });

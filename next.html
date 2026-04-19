@@ -3,71 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediCareConnect/Find-Hospital/page/</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <title>MediCareConnect — Find Your Hospital</title>
+  <meta name="description" content="Find the nearest hospital matched to your symptoms and book an appointment slot instantly.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="style.css">
-  <!-- Google Maps API -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
-  <style>
-    /* Emergency button style matching index.html */
-    .emergency-header-btn {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
-      border: none;
-      padding: 0.5rem 1.2rem;
-      border-radius: 2rem;
-      color: white;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
-      animation: pulseRed 2s infinite;
-    }
-    
-    @keyframes pulseRed {
-      0%, 100% { box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4); }
-      50% { box-shadow: 0 2px 16px rgba(239, 68, 68, 0.8); }
-    }
-    
-    .emergency-header-btn:hover {
-      transform: scale(1.05);
-      background: linear-gradient(135deg, #dc2626, #b91c1c);
-    }
-    
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-  </style>
+  <link rel="stylesheet" href="enhancements.css">
 </head>
 <body>
   <div class="app-wrapper">
     <!-- Header with Emergency Button -->
-    <header class="dashboard-header">
+    <header class="dashboard-header anim-fade-down">
       <div class="header-left">
         <a href="index.html" class="back-home-btn">
           <i class="fas fa-arrow-left"></i> Back to Home
         </a>
       </div>
       <div class="header-logo">
-        <i class="fas fa-hospital-user"></i>
+        <i class="fas fa-hospital-user logo-pulse"></i>
         <span>MediCare<span class="light">Connect</span></span>
       </div>
-     
       <div class="header-right">
-  <a href="emergency.html" class="emergency-header-btn" onclick="localStorage.setItem('previous_page', 'next.html');">
-    <i class="fas fa-ambulance"></i> 🚨 Emergency
-</a>
-  <div class="header-greeting">
-    <i class="fas fa-user-circle"></i>
-    <span id="userNameDisplay">Patient</span>
-  </div>
-</div>
+        <a href="emergency.html" class="emergency-header-btn" onclick="localStorage.setItem('previous_page', 'next.html');">
+          <i class="fas fa-ambulance"></i> 🚨 Emergency
+        </a>
+        <div class="header-greeting">
+          <i class="fas fa-user-circle"></i>
+          <span id="userNameDisplay">Patient</span>
+        </div>
+      </div>
     </header>
 
     <!-- User Info Summary -->

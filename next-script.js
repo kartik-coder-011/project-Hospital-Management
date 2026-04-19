@@ -63,22 +63,28 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('displayAgeGender').textContent = `${userData.age || '?'} yrs, ${userData.gender || 'Not specified'}`;
     
     // ========== HOSPITAL DATABASE ==========
+    // Bed counts: totalBeds / availableBeds (simulated, refreshed each session)
+    function randomBeds(total) {
+        const used = Math.floor(Math.random() * (total - 2));
+        return { totalBeds: total, availableBeds: total - used };
+    }
+
     const hospitalsDatabase = [
-    { name: "Dr.Panjabrao Deshmukh Medical College And Hospital Research Centre,Amravati", type: "General", distance: "1.2 km", lat: 20.94399, lng:77.77200 , img: "https://i.ytimg.com/vi/eYS1Eg543jg/hqdefault.jpg", available: true, timings: { morning: true, evening: true } },
-    { name: "RIMS Hospital, Badnera Road, Amravati", type: "General", distance: "2.5 km", lat: 20.91555, lng: 77.75262, img: "https://cdn.hexahealth.com/Image/1742194160624-743393577.png", available: true, timings: { morning: true, evening: false } },
-    { name: "Dayasagar Hospital, Maltekdi, Amravati", type: "General", distance: "1.7 km", lat: 20.93651, lng: 77.770, img: "https://cdn.hexahealth.com/Image/1742303333969-252545751.png", available: true, timings: { morning: true, evening: true } },
-    { name: "SKINTOTAL SKIN, HAIR, NAIL AND LASER CLINIC - DR. SUBODH D JANE", type: "Skin", distance: "1.8 km", lat: 20.92692, lng: 77.76483, img: "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGhbpzxABNOO4D4UkzljKGKtIOxooP9Duj7oxaD_WN0PnyJc3lzT68em_Gblk-EE_UPO_7Yngx3bP0ZHIkQJ8Bb5TFqd-iaRSNoeihG-t0l__RfcOrP628C0DH5O-HnnAEXNB0dBQ=s680-w680-h510-rw", available: true, timings: { morning: true, evening: true } },
-    { name: "I Skin Hospital/Best Dermatologist in Amravati/ Best Eye Specialist in Amravati/Hair Specialist/Cosmetologist/ Lasers/Best", type: "Skin", distance: "3.2 km", lat: 20.89790, lng: 77.74726, img: "https://lh3.googleusercontent.com/gps-cs-s/APNQkAFGeeufcodZN00Nh8RgqsetqPk7EJmdv_EHC2jUSH-hPOBRITNwKklNf9D0jmq3W9WeCuoKbw5JlvVHVlSYWTYyMt6362YCA0icsEPO7I6TfyLZhg4nw8W8l7J6RvQbgG1LdsB8=s680-w680-h510-rw", available: false, timings: { morning: true, evening: false } },
-    { name: "Dr. Pallavi Pawar (Kandalkar) - Shree Skin and Hair Clinic Rukhmini Nagar, Amravati", type: "Skin", distance: "4.1 km", lat: 20.92122, lng: 77.76341, img: "https://content.jdmagicbox.com/comp/amravati/c2/9999px721.x721.160716161540.k2c2/catalogue/dr-pallavi-pawar-kandalkar-shree-skin-and-hair-clinic-rukhmini-nagar-amravati-dermatologists-ez1u4ut7sr.jpg", available: true, timings: { morning: true, evening: true } },
-    { name: "Max Emergency Center", type: "Emergency", distance: "0.9 km", lat: 19.0720, lng: 72.8780, img: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: true } },
-    { name: "LifeLine Trauma Hospital", type: "Emergency", distance: "2.1 km", lat: 19.0800, lng: 72.8650, img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: true } },
-    { name: "AIIMS Emergency Wing", type: "Emergency", distance: "3.5 km", lat: 19.1000, lng: 72.8600, img: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: false } },
-    { name: "HearClear ENT Specialists", type: "ENT", distance: "1.5 km", lat: 19.0680, lng: 72.8820, img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: true } },
-    { name: "Shree ENT & Sinus Center", type: "ENT", distance: "3.0 km", lat: 19.0850, lng: 72.8680, img: "https://images.unsplash.com/photo-1581595220893-b0739db9a2f3?w=500&h=300&fit=crop", available: false, timings: { morning: true, evening: false } },
-    { name: "ENT Care Center", type: "ENT", distance: "0.7 km", lat: 19.0730, lng: 72.8790, img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: true } },
-    { name: "Dr.Nitin Seth Mukta Children Hospital. Amravati", type: "Child Care", distance: "2.3 km", lat: 20.93063, lng: 77.75602, img: "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGte7mjR2EFwcOL39N2v4GIiFDLxHjq7TagOW8FMTpGaFx3tsuVxQmJCgWa_H48welTMeypM0iRvt2C6Y6koiNo_2G_sucj7epVJVQtej3HRSsMT1MMUf6MaRAN_db5HueI_lWZEw=w408-h544-k-no", available: true, timings: { morning: true, evening: false } },
-    { name: "Sparsh Children HospitalDr.Bipin Rathod|MBBS,MD,Neonatologist(Mumbai),IBCLC(USA) Best Newborn specialist&Lactation Counsellor, Amravati", type: "Child Care", distance: "2.9 km", lat: 20.90797, lng: 77.76325, img: "https://content.jdmagicbox.com/comp/amravati/e6/9999px721.x721.230518153612.f8e6/catalogue/sparsh-children-s-hospital-shankar-nagar-amravati-paediatricians-pkup796oda.jpg", available: true, timings: { morning: false, evening: true } },
-    { name: "More Children Hospital & Radiodiagnostic Centre, Rathi Nagar, Gadge Nagar, Amravati, Maharashtra 444603", type: "Child Care", distance: "5.0 km", lat: 20.95063, lng: 77.76319, img: "https://cdn.hexahealth.com/Image/1742382907614-160971477.png", available: false, timings: { morning: false, evening: true } }
+    { name: "Dr.Panjabrao Deshmukh Medical College And Hospital Research Centre,Amravati", type: "General", distance: "1.2 km", lat: 20.94399, lng:77.77200, img: "https://i.ytimg.com/vi/eYS1Eg543jg/hqdefault.jpg", available: true, timings: { morning: true, evening: true }, ...randomBeds(120) },
+    { name: "RIMS Hospital, Badnera Road, Amravati", type: "General", distance: "2.5 km", lat: 20.91555, lng: 77.75262, img: "https://cdn.hexahealth.com/Image/1742194160624-743393577.png", available: true, timings: { morning: true, evening: false }, ...randomBeds(80) },
+    { name: "Dayasagar Hospital, Maltekdi, Amravati", type: "General", distance: "1.7 km", lat: 20.93651, lng: 77.770, img: "https://cdn.hexahealth.com/Image/1742303333969-252545751.png", available: true, timings: { morning: true, evening: true }, ...randomBeds(60) },
+    { name: "SKINTOTAL SKIN, HAIR, NAIL AND LASER CLINIC - DR. SUBODH D JANE", type: "Skin", distance: "1.8 km", lat: 20.92692, lng: 77.76483, img: "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGhbpzxABNOO4D4UkzljKGKtIOxooP9Duj7oxaD_WN0PnyJc3lzT68em_Gblk-EE_UPO_7Yngx3bP0ZHIkQJ8Bb5TFqd-iaRSNoeihG-t0l__RfcOrP628C0DH5O-HnnAEXNB0dBQ=s680-w680-h510-rw", available: true, timings: { morning: true, evening: true }, ...randomBeds(20) },
+    { name: "I Skin Hospital/Best Dermatologist in Amravati/ Best Eye Specialist in Amravati/Hair Specialist/Cosmetologist/ Lasers/Best", type: "Skin", distance: "3.2 km", lat: 20.89790, lng: 77.74726, img: "https://lh3.googleusercontent.com/gps-cs-s/APNQkAFGeeufcodZN00Nh8RgqsetqPk7EJmdv_EHC2jUSH-hPOBRITNwKklNf9D0jmq3W9WeCuoKbw5JlvVHVlSYWTYyMt6362YCA0icsEPO7I6TfyLZhg4nw8W8l7J6RvQbgG1LdsB8=s680-w680-h510-rw", available: false, timings: { morning: true, evening: false }, ...randomBeds(15) },
+    { name: "Dr. Pallavi Pawar (Kandalkar) - Shree Skin and Hair Clinic Rukhmini Nagar, Amravati", type: "Skin", distance: "4.1 km", lat: 20.92122, lng: 77.76341, img: "https://content.jdmagicbox.com/comp/amravati/c2/9999px721.x721.160716161540.k2c2/catalogue/dr-pallavi-pawar-kandalkar-shree-skin-and-hair-clinic-rukhmini-nagar-amravati-dermatologists-ez1u4ut7sr.jpg", available: true, timings: { morning: true, evening: true }, ...randomBeds(18) },
+    { name: "Max Emergency Center", type: "Emergency", distance: "0.9 km", lat: 19.0720, lng: 72.8780, img: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: true }, ...randomBeds(50) },
+    { name: "LifeLine Trauma Hospital", type: "Emergency", distance: "2.1 km", lat: 19.0800, lng: 72.8650, img: "https://images.unsplash.com/photo-1516549655169-df83a0774514?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: true }, ...randomBeds(40) },
+    { name: "AIIMS Emergency Wing", type: "Emergency", distance: "3.5 km", lat: 19.1000, lng: 72.8600, img: "https://images.unsplash.com/photo-1587351021759-3e566b6af7cc?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: false }, ...randomBeds(100) },
+    { name: "HearClear ENT Specialists", type: "ENT", distance: "1.5 km", lat: 19.0680, lng: 72.8820, img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: true }, ...randomBeds(25) },
+    { name: "Shree ENT & Sinus Center", type: "ENT", distance: "3.0 km", lat: 19.0850, lng: 72.8680, img: "https://images.unsplash.com/photo-1581595220893-b0739db9a2f3?w=500&h=300&fit=crop", available: false, timings: { morning: true, evening: false }, ...randomBeds(20) },
+    { name: "ENT Care Center", type: "ENT", distance: "0.7 km", lat: 19.0730, lng: 72.8790, img: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&h=300&fit=crop", available: true, timings: { morning: true, evening: true }, ...randomBeds(30) },
+    { name: "Dr.Nitin Seth Mukta Children Hospital. Amravati", type: "Child Care", distance: "2.3 km", lat: 20.93063, lng: 77.75602, img: "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGte7mjR2EFwcOL39N2v4GIiFDLxHjq7TagOW8FMTpGaFx3tsuVxQmJCgWa_H48welTMeypM0iRvt2C6Y6koiNo_2G_sucj7epVJVQtej3HRSsMT1MMUf6MaRAN_db5HueI_lWZEw=w408-h544-k-no", available: true, timings: { morning: true, evening: false }, ...randomBeds(35) },
+    { name: "Sparsh Children HospitalDr.Bipin Rathod|MBBS,MD,Neonatologist(Mumbai),IBCLC(USA) Best Newborn specialist&Lactation Counsellor, Amravati", type: "Child Care", distance: "2.9 km", lat: 20.90797, lng: 77.76325, img: "https://content.jdmagicbox.com/comp/amravati/e6/9999px721.x721.230518153612.f8e6/catalogue/sparsh-children-s-hospital-shankar-nagar-amravati-paediatricians-pkup796oda.jpg", available: true, timings: { morning: false, evening: true }, ...randomBeds(28) },
+    { name: "More Children Hospital & Radiodiagnostic Centre, Rathi Nagar, Gadge Nagar, Amravati, Maharashtra 444603", type: "Child Care", distance: "5.0 km", lat: 20.95063, lng: 77.76319, img: "https://cdn.hexahealth.com/Image/1742382907614-160971477.png", available: false, timings: { morning: false, evening: true }, ...randomBeds(22) }
     ];
     
     // ========== SYMPTOM TO HOSPITAL TYPE MAPPING ==========
@@ -369,11 +375,21 @@ document.addEventListener('DOMContentLoaded', function() {
             card.className = 'hospital-card';
             card.style.cssText = 'background: #1e293b; border-radius: 1.5rem; overflow: hidden; margin-bottom: 1rem; border: 1px solid #334155;';
             
+        // Bed availability helpers
+            const bedPct = Math.round((hospital.availableBeds / hospital.totalBeds) * 100);
+            const bedColor = bedPct > 50 ? '#10b981' : bedPct > 20 ? '#f59e0b' : '#ef4444';
+            const bedLabel = bedPct > 50 ? 'Available' : bedPct > 20 ? 'Limited' : 'Critical';
+            const bedIcon  = bedPct > 50 ? 'fa-bed'   : bedPct > 20 ? 'fa-bed'  : 'fa-bed';
+
             card.innerHTML = `
                 <div class="card-img" style="height: 160px; overflow: hidden; position: relative;">
                     <img src="${hospital.img}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://via.placeholder.com/500x300?text=Hospital'">
                     <div class="card-badge" style="position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.7); padding: 0.3rem 0.8rem; border-radius: 30px; font-size: 0.7rem; color: white;">
                         <i class="fas fa-location-dot"></i> ${hospital.distance}
+                    </div>
+                    <!-- Bed badge on image -->
+                    <div style="position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); padding: 0.3rem 0.7rem; border-radius: 30px; font-size: 0.7rem; color: ${bedColor}; display: flex; align-items: center; gap: 0.4rem; border: 1px solid ${bedColor}40;">
+                        <i class="fas fa-bed"></i> ${hospital.availableBeds}/${hospital.totalBeds} beds
                     </div>
                 </div>
                 <div class="card-content" style="padding: 1.2rem;">
@@ -388,6 +404,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="fas fa-map-pin" style="color: #10b981;"></i> 
                          <strong>${hospital.distance}</strong> from your location
                     </div>
+
+                    <!-- BED AVAILABILITY WIDGET -->
+                    <div class="bed-widget">
+                        <div class="bed-widget-header">
+                            <span class="bed-widget-label">
+                                <i class="fas fa-bed"></i> Bed Availability
+                            </span>
+                            <span class="bed-count-badge" style="color: ${bedColor}; border-color: ${bedColor}40; background: ${bedColor}15;">
+                                <span class="bed-pulse" style="background: ${bedColor};"></span>
+                                ${hospital.availableBeds} <span style="color:#64748b; font-weight:400;">/ ${hospital.totalBeds}</span> &nbsp;${bedLabel}
+                            </span>
+                        </div>
+                        <div class="bed-bar-track">
+                            <div class="bed-bar-fill" style="width: ${bedPct}%; background: linear-gradient(90deg, ${bedColor}cc, ${bedColor});"></div>
+                        </div>
+                    </div>
+
                     <div style="display: flex; align-items: center; gap: 0.5rem; color: #10b981; margin: 0.5rem 0; padding: 0.3rem 0; border-top: 1px solid #334155; border-bottom: 1px solid #334155; font-size: 0.75rem;">
                         <i class="fas fa-clock"></i> ${hospital.timings.morning ? '🌅 Morning' : ''} ${hospital.timings.evening ? '🌙 Evening' : ''}
                     </div>

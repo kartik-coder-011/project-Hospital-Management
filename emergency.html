@@ -3,10 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Emergency-Response/MediCareConnect/page</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>MediCareConnect — Emergency SOS Response</title>
+  <meta name="description" content="Emergency SOS portal. Call ambulance, share live location, and get first-aid guidance instantly.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="emergency.css">
+  <link rel="stylesheet" href="enhancements.css">
+  <!-- Leaflet.js for ambulance map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
 </head>
 <body class="emergency-page">
   <div class="emergency-container">
@@ -23,13 +31,18 @@
       <div class="emergency-time" id="currentTime"></div>
     </header>
 
-    <!-- SOS Big Button -->
+    <!-- SOS Big Button with Radar Rings -->
     <div class="sos-section">
-      <button id="sosButton" class="sos-button">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span>SOS</span>
-        <small>Emergency Alert</small>
-      </button>
+      <div class="sos-radar-wrapper">
+        <div class="radar-ring r1"></div>
+        <div class="radar-ring r2"></div>
+        <div class="radar-ring r3"></div>
+        <button id="sosButton" class="sos-button">
+          <i class="fas fa-exclamation-triangle"></i>
+          <span>SOS</span>
+          <small>Emergency Alert</small>
+        </button>
+      </div>
       <p class="sos-warning">⚠️ Use only in life-threatening situations</p>
     </div>
 
@@ -69,6 +82,69 @@
         <p>Basic life-saving instructions</p>
         <button class="action-btn view-guide">Read Guide</button>
       </div>
+
+      <div class="action-card" id="trackAmbulanceCard">
+        <div class="action-icon track-bg">
+          <i class="fas fa-truck-medical"></i>
+        </div>
+        <h3>Track Ambulance</h3>
+        <p>Live location &amp; ETA to your door</p>
+        <button class="action-btn track-ambulance-btn">Track Now</button>
+      </div>
+    </div>
+
+    <!-- ===== AMBULANCE TRACKER PANEL ===== -->
+    <div id="ambulanceTrackerPanel" class="amb-tracker-panel" style="display:none;">
+      <div class="amb-tracker-header">
+        <div class="amb-tracker-title">
+          <span class="amb-live-dot"></span>
+          <i class="fas fa-truck-medical"></i>
+          <span>Live Ambulance Tracking</span>
+        </div>
+        <button id="closeTrackerBtn" class="amb-close-btn"><i class="fas fa-times"></i></button>
+      </div>
+
+      <!-- ETA + Status row -->
+      <div class="amb-info-row">
+        <div class="amb-eta-card">
+          <span class="amb-eta-label"><i class="fas fa-clock"></i> Estimated Arrival</span>
+          <span class="amb-eta-value" id="etaDisplay">Calculating...</span>
+        </div>
+        <div class="amb-eta-card">
+          <span class="amb-eta-label"><i class="fas fa-route"></i> Distance Away</span>
+          <span class="amb-eta-value" id="distDisplay">—</span>
+        </div>
+        <div class="amb-eta-card">
+          <span class="amb-eta-label"><i class="fas fa-tachometer-alt"></i> Speed</span>
+          <span class="amb-eta-value" id="speedDisplay">—</span>
+        </div>
+      </div>
+
+      <!-- Progress steps -->
+      <div class="amb-steps">
+        <div class="amb-step active" id="step1"><i class="fas fa-check-circle"></i><span>Dispatched</span></div>
+        <div class="amb-step-line"><div class="amb-step-progress" id="prog1"></div></div>
+        <div class="amb-step" id="step2"><i class="fas fa-truck-medical"></i><span>En Route</span></div>
+        <div class="amb-step-line"><div class="amb-step-progress" id="prog2"></div></div>
+        <div class="amb-step" id="step3"><i class="fas fa-map-marker-alt"></i><span>Nearby</span></div>
+        <div class="amb-step-line"><div class="amb-step-progress" id="prog3"></div></div>
+        <div class="amb-step" id="step4"><i class="fas fa-house-medical"></i><span>Arrived</span></div>
+      </div>
+
+      <!-- Map -->
+      <div id="ambMap" class="amb-map"></div>
+
+      <!-- Driver card -->
+      <div class="amb-driver-card">
+        <div class="amb-driver-avatar"><i class="fas fa-user-nurse"></i></div>
+        <div class="amb-driver-info">
+          <strong id="driverName">Rajesh Kumar</strong>
+          <span>Paramedic · Unit AMB-204</span>
+        </div>
+        <a href="tel:102" class="amb-call-btn"><i class="fas fa-phone"></i> Call Driver</a>
+      </div>
+
+      <p class="amb-disclaimer">🔴 Live simulation — positions update every 3 seconds</p>
     </div>
 
     <!-- Nearest Hospitals Section -->
