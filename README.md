@@ -139,21 +139,26 @@ To help users act effectively during emergencies, the system also provides:
 
 ![Home](https://github.com/kartik-coder-011/project-Hospital-Management/blob/main/Home.png?raw=true)
 
+
 ### 🗺️ Map Integration
 
-![Map]([https://via.placeholder.com/800x400](https://github.com/kartik-coder-011/project-Hospital-Management/blob/main/Navigation-System.png?raw=true))
+![Map](https://github.com/kartik-coder-011/project-Hospital-Management/blob/main/Navigation-System.png?raw=true)
+
 
 ### 🏥 Hospital Listings
 
 ![Cards](https://github.com/kartik-coder-011/project-Hospital-Management/blob/main/Hospital-Cards.png?raw=true)
 
+
 ### 🚨 Emergency Section
 
 ![Emergency](https://github.com/kartik-coder-011/project-Hospital-Management/blob/main/Emergency.png?raw=true)
 
+
 ### 🕒 Slot-booking Section
 
 ![Navigation](https://github.com/kartik-coder-011/project-Hospital-Management/blob/main/Slot-Booking.png?raw=true)
+
 
 
 ## ⚙️ Getting Started
