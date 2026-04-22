@@ -130,7 +130,7 @@ To help users act effectively during emergencies, the system also provides:
 
 
 ## 🎥 Demo Video
-👉 ![Demo Video](https://drive.google.com/file/d/11_sO41x1MVuZnAmiOgEcheRHGom_osGF/view?usp=drive_link)
+👉 [Demo Video](https://drive.google.com/file/d/11_sO41x1MVuZnAmiOgEcheRHGom_osGF/view?usp=drive_link)
 
 
 ## 📸 Screenshots
